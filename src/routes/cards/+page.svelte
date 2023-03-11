@@ -1,27 +1,31 @@
+<script lang="ts">
+
+  export let data;
+  $: ({ cardsData } = data );
+  
+</script>
+
+<!-- <p>{JSON.stringify(cardsData.cards)}</p> -->
+
 <div class="wrapper">
   <p>Search</p>
-
   <div class="grid">
-    <div class="grid-item">
-      <img src="photo1.jpg" alt="Photo 1">
-      <ul>
-        <li>Descriptor 1</li>
-        <li>Descriptor 2</li>
-        <li>Descriptor 3</li>
-        <li>Descriptor 4</li>
-      </ul>
-    </div>
-    <div class="grid-item">
-      <img src="photo2.jpg" alt="Photo 2">
-      <ul>
-        <li>Descriptor 1</li>
-        <li>Descriptor 2</li>
-        <li>Descriptor 3</li>
-        <li>Descriptor 4</li>
-      </ul>
-    </div>
-    <!-- add more grid items here as needed -->
+    {#each cardsData.cards as card}
+      {#if card.imageUrl}
+          <div class="grid-item">
+            <img src={card.imageUrl} alt={card.name + " Card Photo"}>
+            <ul>
+              <li>Name: {card.name}</li>
+              <li>Color: {card.color}</li>
+              <li>Artist: {card.artist}</li>
+              <li>Subtypes: {card.subtypes}</li>
+            </ul>
+          </div>
+      {/if}
+    {/each}
   </div>
+
+  <div>Pagination</div>
 </div>
 
 <style>
@@ -38,6 +42,7 @@
     justify-content: center;
     grid-gap: 20px;
     margin: auto;
+    width: 100%;
   }
 
   .grid-item {
