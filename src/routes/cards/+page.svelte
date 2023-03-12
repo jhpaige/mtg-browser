@@ -15,8 +15,8 @@
   let selectedItem = null;
 
   // Adds spaces after commas in subtypes
-  function formatSubtypes(subtypes: string) {
-    return subtypes.replace(/,/g, ', ');
+  function formatCommas(stringVal: string) {
+    return stringVal.replace(/,/g, ', ');
   }
 
   function handleClick(item) {
@@ -59,11 +59,13 @@
 
 <div class="wrapper">
 
-  <form class="relative m-6">
-    <div class="flex items-center border-b border-b-2 border-gray-500 py-2 w-80">
-      <input class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By...">
+  <h1 class="text-5xl m-10 font-black font-serif text-center">MTG Browser</h1>
+
+  <form class="relative mt-0 m-10">
+    <div class="flex items-center border-b border-gray-500 py-2 w-80">
+      <input name='text-input' class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By...">
       <div class="relative block appearance-none w-fit bg-white border border-gray-400 hover:border-gray-500 px-2 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-        <select id="search-select" class="">
+        <select id="search-select" name='search-select'>
           <option value="name">Name</option>
           <option value="artist">Artist</option>
         </select>
@@ -82,10 +84,12 @@
             <img src={card.imageUrl} alt={card.name + " Card Photo"} on:load={handleLoad}>
             <ul>
               {#if card.artist}<li>Name: {card.name}</li>{/if}
-              {#if card.color}<li>Color: {card.color}</li>{/if}
+              {#if card.colors}
+                <li>Colors: {formatCommas(String(card.colors))}</li>
+              {/if}
               {#if card.artist}<li>Artist: {card.artist}</li>{/if}
               {#if card.subtypes}
-                <li>Subtypes: {formatSubtypes(String(card.subtypes))}</li>
+                <li>Subtypes: {formatCommas(String(card.subtypes))}</li>
               {/if}
             </ul>
           </div>

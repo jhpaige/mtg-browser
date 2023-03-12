@@ -16,9 +16,13 @@
       <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/>
     </svg>
   </button>
-  <div class="info-wrapper">
-    <div class="card-data my-5">
+  <div class="info-wrapper m-12">
+    <div class="card-data m-5">
       <h1 class="card-name">{cardData.card.name}</h1>
+      <div class="card-image-text card-image-text-in">
+        <img src={cardData.card.imageUrl} alt={cardData.card.name + " Image"} class="card-image">
+        {#if cardData.card.text}<div class="card-text font-semibold text-center mt-5">{cardData.card.text}</div>{/if}
+      </div>
       <div class="card-specifics m-5">
         {#if cardData.card.manaCost}<div class="card-mana-cost">Cost: {cardData.card.manaCost}</div>{/if}
         {#if cardData.card.cmc}<div class="card-cmc">CMC: {cardData.card.cmc}</div>{/if}
@@ -32,7 +36,7 @@
       </div>
       {#if cardData.card.flavor}<div class="card-flavor font-medium italic text-center m-5">{cardData.card.flavor}</div>{/if}
     </div>
-    <div class="card-image-text">
+    <div class="card-image-text card-image-text-out m-10">
       <img src={cardData.card.imageUrl} alt={cardData.card.name + " Image"} class="card-image">
       {#if cardData.card.text}<div class="card-text font-semibold text-center mt-5">{cardData.card.text}</div>{/if}
     </div>
@@ -42,7 +46,8 @@
 <style>
   .page-wrapper {
     background-color: #ccc;
-    height: 100vh;
+    min-height: 100vh;
+    height: fit-content;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,15 +58,13 @@
     flex-direction: row;
     justify-content: space-between;
     max-width: 900px;
-    margin: 0 auto;
     background-color: #f2f2f2;
     border: 2px solid #ccc;
     border-radius: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
   .card-data {
+    min-width: 200px;
     max-width: 400px;
     display: flex;
     flex-direction: column;
@@ -75,6 +78,23 @@
     justify-content: space-evenly;
     margin: 20px;
     min-width: 250px;
+  }
+
+  .card-image-text-out {
+    display: flex;
+  }
+
+  .card-image-text-in {
+    display: none;
+  }
+
+  @media (max-width: 715px) {
+    .card-image-text-in {
+      display: flex;
+    }
+    .card-image-text-out {
+      display: none;
+    }
   }
 
   .card-name {
