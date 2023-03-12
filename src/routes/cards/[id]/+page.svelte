@@ -3,7 +3,7 @@
   $: ({ cardData } = data );
   
   function goBack() {
-    history.back();
+    location.href = '/cards';
   }
 </script>
 
