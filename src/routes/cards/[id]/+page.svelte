@@ -1,9 +1,11 @@
 <script lang="ts">
   export let data;
   $: ({ cardData } = data );
+  let isLoading = false;
   
   function goBack() {
     location.href = '/cards';
+    isLoading = true;
   }
 </script>
 
@@ -41,6 +43,11 @@
       {#if cardData.card.text}<div class="card-text font-semibold text-center mt-5">{cardData.card.text}</div>{/if}
     </div>
   </div>
+  {#if isLoading}
+    <div class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -51,6 +58,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: auto;
   }
   
   .info-wrapper {
