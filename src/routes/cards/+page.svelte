@@ -7,13 +7,18 @@
   export let data;
 
   // Assigns initial card data to cardsData and isLoading/selectedItem to initial values
-  let cardsData = data.cardsData.cards;
+  
   let isLoading = false;
   let isChangingPage = false;
   let selectedItem = null;
+
+  let cardsData = data.cardsData.cards;
   let currPage: number = 1;
-  let changePage: boolean = false;
+
+  let textInput = '';
+  let resInput = textInput;
   let currType: string = 'name';
+  let resType = currType;
 
   // Adds spaces after commas in subtypes
   function formatCommas(stringVal: string) {
@@ -26,70 +31,69 @@
   }
 
   function handleSearch() {
+    if (resType != currType || resInput != textInput) {
+      currPage = 1;
+    }
     isChangingPage = true;
     cardsData = [];
   }
 
   function handleBackPress() {
-    currPage--;
+    if (resType != currType || resInput != textInput) {
+      currPage = 1;
+    } else if (!isChangingPage) {
+      currPage--;
+    }
     cardsData = [];
-    changePage = true;
     isChangingPage = true;
-    console.log(currPage);
   }
 
   function handleNextPress() {
-    currPage++;
+    if (resType != currType || resInput != textInput) {
+      currPage = 1;
+    } else if (!isChangingPage) {
+      currPage++;
+    }
     cardsData = [];
-    changePage = true;
     isChangingPage = true;
-    console.log(currPage);
-  }
-
-  function handleTypeSelection() {
-    currType = document.getElementById('search-type').value;
   }
 
 </script>
 
 <!-- <p>{JSON.stringify(cardsData)}</p> -->
 
-<div class="wrapper">
+<div class="wrapper bg-gray-300">
 
   <h1 class="text-5xl m-10 font-black font-serif text-center">MTG Browser</h1>
-
   <form class="relative m-10 flex w-screen justify-center" method="post" use:enhance={() => {
     return async ({ result, update }) => {
-      changePage = false;
-      await update();
+      await update({ reset: false });
       cardsData = result.data.cardsApiData;
-      currType = result.data.searchType;
-      currPage = result.data.pageNumber;
-      textInput = result.data.textInput;
-      // SET TYPE, DATA, AND PAGE NUMBER
+      resInput = result.data.textInput;
+      resType = result.data.searchType;
       isChangingPage = false;
       isLoading = false;
       console.log(cardsData);
     };
   }}>
-    <button on:click={handleBackPress} disabled={currPage == 1 && changePage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16">
+    <button id="back-button" on:click={handleBackPress} disabled={currPage == 1 && isChangingPage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
       {'<'}
     </button>
     <div class="flex items-center border-b border-gray-500 py-2 w-80">
-      <input name='text-input' class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By..."/>
+      <input name='text-input' id="text-input" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By..." bind:value={textInput}/>
       <div class="relative block appearance-none w-fit bg-white border border-gray-400 hover:border-gray-500 px-2 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-        <select on:change={handleTypeSelection} id="search-type" name='search-type' value={currType}>
+        <select id="search-type" name='search-type' bind:value={currType}>
           <option value="name">Name</option>
           <option value="artist">Artist</option>
         </select>
       </div>
-      <input name="page-number" hidden value={currPage}/>
-      <input name="change-page" hidden value={changePage}/>
+      <input name="page-number" id="page-number" hidden bind:value={currPage}/>
+      <input name="is-changing-page" id="is-changing-page" hidden bind:value={isChangingPage}/>
       <button id="search-button" class="flex-shrink-0 apprearance-none bg-white border-gray-400 hover:border-gray-500 text-sm border mx-2 text-white py-2 px-2 rounded shadow focus:outline-none focus:shadow-outline" type="submit" on:click={handleSearch}>
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       </button>
     </div>
-    <button on:click={handleNextPress} type="submit" class="fixed right-0 text-3xl bottom-0 h-full w-16">
+    <button id="forward-button" on:click={handleNextPress} disabled={cardsData.length < 100 && isChangingPage == false} type="submit" class="fixed right-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
       {'>'}
     </button>
   </form>
@@ -143,7 +147,6 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #ccc;
   }
 
   img {
