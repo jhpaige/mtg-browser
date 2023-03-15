@@ -80,7 +80,6 @@
       resType = result.data.searchType;
       isChangingPage = false;
       isLoading = false;
-      console.log(cardsData);
     };
   }}>
     <button id="back-button" on:click={handleBackPress} hidden={isChangingPage == true} disabled={currPage == 1 && isChangingPage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
