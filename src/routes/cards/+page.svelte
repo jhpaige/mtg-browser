@@ -76,13 +76,13 @@
       console.log(cardsData);
     };
   }}>
-    <button id="back-button" on:click={handleBackPress} disabled={currPage == 1 && isChangingPage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
+    <button id="back-button" on:click={handleBackPress} hidden={isChangingPage == true} disabled={currPage == 1 && isChangingPage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
       {'<'}
     </button>
     <div class="flex items-center border-b border-gray-500 py-2 w-80">
       <input name='text-input' id="text-input" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By..." bind:value={textInput}/>
       <div class="relative block appearance-none w-fit bg-white border border-gray-400 hover:border-gray-500 px-2 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-        <select id="search-type" name='search-type' bind:value={currType}>
+        <select id="search-type" name='search-type' bind:value={currType} class="hover:cursor-pointer">
           <option value="name">Name</option>
           <option value="artist">Artist</option>
         </select>
@@ -93,7 +93,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       </button>
     </div>
-    <button id="forward-button" on:click={handleNextPress} disabled={cardsData.length < 100 && isChangingPage == false} type="submit" class="fixed right-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
+    <button id="forward-button" on:click={handleNextPress} hidden={isChangingPage == true} disabled={cardsData.length < 100 && isChangingPage == false} type="submit" class="fixed right-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
       {'>'}
     </button>
   </form>
