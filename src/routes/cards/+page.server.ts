@@ -1,27 +1,28 @@
 import { card } from 'mtgsdk';
 
-// Fetches data from API when page form submitted
+// Type declaration for searchInfo FormData object
+interface SearchInfo {
+  get: (name: string) => string;
+}
+
+// Type declaration for actions default function
 export const actions = {
-  default: async ({ request }) => {
+  default: async ({ request }: { request: { formData: () => Promise<SearchInfo> } }) => {
 
     // Saves form data to variables
     const searchInfo = await request.formData();
-
-    console.log(searchInfo);
-
     const searchType = searchInfo.get('search-type');
     const textInput = searchInfo.get('text-input');
     const pageNumber = searchInfo.get('page-number');
 
     // Variable to store the cards' api data
-    let cardsApiData;
+    let cardsApiData = [];
     // Assigns API url based on form request
     if (searchType === 'name') {
-      cardsApiData = await card.where({ name: `${textInput}`, page: Number(pageNumber),  pageSize: 100 });
+      cardsApiData = await card.where({ name: `${textInput}`, page: Number(pageNumber), pageSize: 100 });
     } else if (searchType === 'artist') {
-      cardsApiData = await card.where({ artist: `${textInput}`, page: Number(pageNumber),  pageSize: 100 });
+      cardsApiData = await card.where({ artist: `${textInput}`, page: Number(pageNumber), pageSize: 100 });
     }
-    // console.log(cardsApiData);
 
     // Returns cardsApiData as cards to page
     return {

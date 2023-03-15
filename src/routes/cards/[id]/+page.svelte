@@ -1,46 +1,51 @@
 <script lang="ts">
 
+  // Import necessary functions
   import { enhance } from '$app/forms';
-	import { afterNavigate } from '$app/navigation';
+  import { afterNavigate } from '$app/navigation';
 
-  export let form;
-  export let data;
+  // Declare and initialize variables
+  export let form: any;
+  export let data: { cardData: any };
   $: ({ cardData } = data);
-  let relatedCards = [];
+  let relatedCards: any[] = [];
   let isLoading = false;
   let isLoadingRelated = false;
-  let selectedItem = null;
-  
-  function goBack() {
+  let selectedItem: any | null = null;
+
+  // Function to go back to the home page
+  function goBack(): void {
     location.href = '/cards';
     isLoading = true;
   }
 
-  function handleCardClick(item) {
+  // Function to handle navigation after clicking on a card
+  function handleCardClick(item: any): void {
     isLoading = true;
     selectedItem = item;
   }
 
-  function formatCommas(stringVal: string) {
+  // Function to format strings with commas to have spaces after the commas
+  function formatCommas(stringVal: string): string {
     return stringVal.replace(/,/g, ', ');
   }
 
+  // Resets isLoading and selectedItem after navigation url changes
   afterNavigate(async () => {
     isLoading = false;
     selectedItem = null;
-  })
+  });
 
 </script>
 
-<!-- <img src={cardData.imageUrl} alt='Card Image'/>
-<p>{JSON.stringify(cardData)}</p> -->
-
 <div class="page-wrapper">
+  <!-- Back button to go to home page -->
   <button class="back-btn" on:click={goBack}>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
       <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/>
     </svg>
   </button>
+  <!-- Wrapper containing all data for the card with the id in the url -->
   <div class="info-wrapper m-12 mb-0">
     <div class="card-data m-5">
       <h1 class="card-name text-center">{cardData.name}</h1>
@@ -66,6 +71,7 @@
       {#if cardData.text}<div class="card-text font-semibold text-center mt-5">{cardData.text}</div>{/if}
     </div>
   </div>
+  <!-- Form to request other cards in set when "Load others" button clicked -->
   <form method="post" use:enhance={() => {
     return async ({ result, update }) => {
       await update();
@@ -75,15 +81,17 @@
   }}>
     <input name="card-set" id="card-set" hidden bind:value={cardData.set}/>
     <button type="submit" class="m-5 flex-shrink-0 apprearance-none bg-white border-gray-400 hover:border-gray-500 text-sm border mx-2 text-black py-2 px-2 rounded shadow focus:outline-none focus:shadow-outline" hidden={ isLoadingRelated || relatedCards.length > 0 } on:click={() => {isLoadingRelated = true}}>
-      Load Related Cards
+      Load Others from {cardData.setName}
     </button>
   </form>
   {#if relatedCards.length == 0}
+    <!-- Loading spinner if waiting on set cards to load -->
     {#if isLoadingRelated}
       <div class="loading-spinner"></div>
     {/if}
   {:else}
-    <h2 class="text-xl m-5">Related Cards</h2>
+    <!-- Displays cards in set -->
+    <h2 class="text-xl m-5">Others from {cardData.setName}</h2>
     <div class="grid">
       {#key relatedCards}
         {#each relatedCards as card}
@@ -108,6 +116,7 @@
       {/key}
     </div>
   {/if}
+  <!-- Loading overlay and spinner -->
   {#if isLoading}
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -116,8 +125,52 @@
 </div>
 
 <style>
+  /* Page layout */
+  .page-wrapper {
+    background-color: #ccc;
+    min-height: 100vh;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-.grid {
+  /* Loading overlay */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Loading spinner animation */
+  .loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Card grid */
+  .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 266px);
     justify-content: center;
@@ -163,49 +216,14 @@
   ul li {
     margin-bottom: 10px;
   }
-  
+
+  /* Selected card */
   .grid-item.selected {
     opacity: 0.2;
     transition: opacity 0.3s ease-out;
   }
-  
-  .page-wrapper {
-    background-color: #ccc;
-    min-height: 100vh;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
 
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 2s linear infinite;
-    margin: auto;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
+  /* Card information */
   .info-wrapper {
     display: flex;
     flex-direction: row;
@@ -268,6 +286,7 @@
     margin-bottom: 10px;
   }
 
+  /* Back button */
   .back-btn {
     position: absolute;
     top: 10px;

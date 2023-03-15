@@ -1,36 +1,40 @@
 <script lang="ts">
 
+  // Import the enhance function from $app/forms
   import { enhance } from '$app/forms';
 
-  // Allows us to use form and data properties
-  export let form;
-  export let data;
+  // Declare form and data properties
+  export let form: any;
+  export let data: any;
 
-  // Assigns initial card data to cardsData and isLoading/selectedItem to initial values
-  
-  let isLoading = false;
-  let isChangingPage = false;
-  let selectedItem = null;
+  // Initialize isLoading, isChangingPage, and selectedItem
+  let isLoading: boolean = false;
+  let isChangingPage: boolean = false;
+  let selectedItem: any = null;
 
-  let cardsData = data.cardsData.cards;
+  // Set the initial value of cardsData to data.cardsData.cards and currPage to 1
+  let cardsData: any[] = data.cardsData.cards;
   let currPage: number = 1;
 
-  let textInput = '';
-  let resInput = textInput;
+  // Initialize textInput, resInput, currType, and resType
+  let textInput: string = '';
+  let resInput: string = textInput;
   let currType: string = 'name';
-  let resType = currType;
+  let resType: string = currType;
 
   // Adds spaces after commas in subtypes
-  function formatCommas(stringVal: string) {
+  function formatCommas(stringVal: string): string {
     return stringVal.replace(/,/g, ', ');
   }
 
-  function handleCardClick(item) {
+  // Handle card click event
+  function handleCardClick(item: any): void {
     isLoading = true;
     selectedItem = item;
   }
 
-  function handleSearch() {
+  // Handle search event
+  function handleSearch(): void {
     if (resType != currType || resInput != textInput) {
       currPage = 1;
     }
@@ -38,7 +42,8 @@
     cardsData = [];
   }
 
-  function handleBackPress() {
+  // Handle back button press event
+  function handleBackPress(): void {
     if (resType != currType || resInput != textInput) {
       currPage = 1;
     } else if (!isChangingPage) {
@@ -48,7 +53,8 @@
     isChangingPage = true;
   }
 
-  function handleNextPress() {
+  // Handle forward button press event
+  function handleNextPress(): void {
     if (resType != currType || resInput != textInput) {
       currPage = 1;
     } else if (!isChangingPage) {
@@ -60,11 +66,12 @@
 
 </script>
 
-<!-- <p>{JSON.stringify(cardsData)}</p> -->
-
 <div class="wrapper bg-gray-300">
 
+  <!-- Page header -->
   <h1 class="text-5xl m-10 font-black font-serif text-center">MTG Browser</h1>
+
+  <!-- Form that handles all submission data -->
   <form class="relative m-10 flex w-screen justify-center" method="post" use:enhance={() => {
     return async ({ result, update }) => {
       await update({ reset: false });
@@ -79,7 +86,7 @@
     <button id="back-button" on:click={handleBackPress} hidden={isChangingPage == true} disabled={currPage == 1 && isChangingPage == false} type="submit" class="fixed left-0 text-3xl bottom-0 h-full w-16 enabled:hover:bg-gray-200 enabled:hover:cursor-pointer disabled:opacity-20">
       {'<'}
     </button>
-    <div class="flex items-center border-b border-gray-500 py-2 w-80">
+    <div hidden={isChangingPage == true} class="flex items-center border-b border-gray-500 py-2 w-80">
       <input name='text-input' id="text-input" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 focus:outline-none text-base" type="text" placeholder="Search By..." bind:value={textInput}/>
       <div class="relative block appearance-none w-fit bg-white border border-gray-400 hover:border-gray-500 px-2 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
         <select id="search-type" name='search-type' bind:value={currType} class="hover:cursor-pointer">
@@ -131,7 +138,8 @@
       {/key}
     </div>
   {/if}
-
+  
+  <!-- Shows spinner if page data is loading -->
   {#if isLoading}
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -141,6 +149,7 @@
 </div>
 
 <style>
+  /* Wrapper styles */
   .wrapper {
     align-items: center;
     justify-content: top;
@@ -149,11 +158,13 @@
     flex-direction: column;
   }
 
+  /* Card image styles */
   img {
     border: 2px solid #ccc;
     border-radius: 13px;
   }
 
+  /* Card grid styles */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 266px);
@@ -168,6 +179,7 @@
     width: calc(100vw - 128px);
   }
 
+  /* Card styles */
   .grid-item {
     display: flex;
     flex-direction: column;
@@ -181,31 +193,37 @@
     transition: opacity 0.3s ease-out;
   }
 
+  /* Card hover styles */
   .grid-item:hover {
     opacity: 0.5;
   }
 
+  /* Card image styles */
   .grid-item img {
     width: 226px;
     height: auto;
     margin-bottom: 10px;
   }
 
+  /* Card details list styles */
   ul {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
+  /* Card detail item styles */
   ul li {
     margin-bottom: 10px;
   }
-  
+
+  /* Selected card styles */
   .grid-item.selected {
     opacity: 0.2;
     transition: opacity 0.3s ease-out;
   }
-  
+
+  /* Loading overlay styles */
   .loading-overlay {
     position: fixed;
     top: 0;
@@ -217,7 +235,8 @@
     justify-content: center;
     align-items: center;
   }
-  
+
+  /* Loading spinner styles */
   .loading-spinner {
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3498db;
@@ -227,9 +246,11 @@
     animation: spin 2s linear infinite;
     margin: auto;
   }
-  
+
+  /* Spin animation styles */
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
 </style>
