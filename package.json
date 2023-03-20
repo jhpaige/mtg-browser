@@ -32,6 +32,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"mtgsdk": "^1.0.0"
+		"mtgsdk": "^0.2.0"
 	}
 }

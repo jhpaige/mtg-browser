@@ -1,13 +1,8 @@
 import { card } from 'mtgsdk';
 
-// Type declaration for searchInfo FormData object
-interface SearchInfo {
-  get: (name: string) => string;
-}
-
 // Type declaration for actions default function
 export const actions = {
-  default: async ({ request }: { request: { formData: () => Promise<SearchInfo> } }) => {
+  default: async ({ request }) => {
 
     // Saves form data to variables
     const searchInfo = await request.formData();
